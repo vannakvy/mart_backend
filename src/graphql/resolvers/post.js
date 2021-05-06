@@ -31,8 +31,8 @@ export default {
       return post;
     },
 //    @DESC to Get Posts by Pagination variables
-//      @Access Public
-     
+//    @Access Public
+
     getPostsWithPagination: async (_, { page, limit, user_id }, { Post }) => {
       const options = {
         page: page || 1,
@@ -52,13 +52,11 @@ export default {
       }
 
       let posts = await Post.paginate(query, options);
-
       return posts;
     },
-    /**
-     * @DESC to Get Posts by Pagination variables
-     * @Access Public
-     */
+//    @DESC to Get Posts by Pagination variables
+//    @Access Public
+     
     getMyPostsWithPagination: async (_, { page, limit }, { Post, user }) => {
       const options = {
         page: page || 1,
@@ -81,15 +79,14 @@ export default {
     },
   },
   Mutation: {
-    /**
-         * @DESC to Create new Post
-         * @Params newPost{ 
-                title!, 
-                content!, 
-                featuredImage 
-            }
-         * @Access Private
-         */
+        //   @DESC to Create new Post
+        //  @Params newPost{ 
+        //         title!, 
+        //         content!, 
+        //         featuredImage 
+        //     }
+        //  @Access Private
+         
     createPost: async (_, { newPost }, { Post, user }) => {
       const { title, content } = newPost;
 
@@ -116,19 +113,18 @@ export default {
       };
       return result;
     },
-    /**
-         * @DESC to Update an Existing Post by ID
-         * @Params updatedPost { 
-                title!, 
-                content!, 
-                featuredImage 
-            }
-         * @Access Private
-         */
+    //  @DESC to Update an Existing Post by ID
+    //      @Params updatedPost { 
+    //             title!, 
+    //             content!, 
+    //             featuredImage 
+    //         }
+    //  @Access Private
+
+    
     updatePost: async (_, { updatedPost, id }, { Post, user }) => {
       try {
         let { title, content } = updatedPost;
-
         await NewPostRules.validate(
           {
             title,
@@ -138,7 +134,6 @@ export default {
             abortEarly: false,
           }
         );
-
         let post = await Post.findOneAndUpdate(
           {
             _id: id,
@@ -149,24 +144,20 @@ export default {
             new: true,
           }
         );
-
         if (!post) {
           throw new Error("Unathorized Access");
         }
-
         // Populate the Author Fields
         await post.populate("author").execPopulate();
-
         return post;
       } catch (err) {
         throw new ApolloError(err.message);
       }
     },
-    /**
-     * @DESC to Delete an Existing Post by ID
-     * @Params id!
-     * @Access Private
-     */
+    //    @DESC to Delete an Existing Post by ID
+    //    @Params id!
+    //    @Access Private
+     
     deletePost: async (_, { id }, { Post, user }) => {
       try {
         let post = await Post.findOneAndDelete({
