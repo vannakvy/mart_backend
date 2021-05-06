@@ -2,7 +2,6 @@ import {Schema,model} from 'mongoose'
 
 const addressSchema = new Schema({
     houseNumber: String,
-    drop_growed:String,
     village:{
         type:String,
         required:true
