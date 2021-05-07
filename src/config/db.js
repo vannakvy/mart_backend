@@ -5,12 +5,12 @@ import {DB} from './index.js'
 
 dotenv.config()
 
-const connectDB =  ()=>{
+const connectDB =   async()=>{
     try{
-        const conn =  mongoose.connect(DB,{useUnifiedTopology:false,useNewUrlParser: true,useCreateIndex: true })
+        const conn =  await mongoose.connect(DB,{useUnifiedTopology:false,useNewUrlParser: true,useCreateIndex: true })
         success({
             badge: true,
-            message: `Successfully connected with the database ${conn}`,
+            message: `Successfully connected with the database ${conn.connection}`,
           });
     }catch(err){
         error({

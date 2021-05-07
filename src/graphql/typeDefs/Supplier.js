@@ -2,10 +2,10 @@ import { gql } from "apollo-server-express";
 
 export default gql`
   extend type Query {
-    getAllSuppliers: [Supplier!]!
+   allSuppliers: [Supplier!]!
     getSupplierById(id: ID!): Supplier!
-    #    getMySuppliersWithPagination(page: Int, limit: Int): SupplierPaginator!
-    #    getSuppliersWithPagination(page: Int, limit: Int, user_id: ID): SupplierPaginator!
+       getMySuppliersWithPagination(page: Int, limit: Int): SupplierPaginator!
+       getSupplierWithPagination(page: Int, limit: Int, user_id: ID): SupplierPaginator!
   }
   extend type Mutation {
         createSupplier(newSupplier: SupplierInput): Supplier! @isAuth
@@ -17,7 +17,7 @@ export default gql`
     id: ID!
     firstName: String!
     lastName: String!
-    address: [Address]
+    address: Address!
     tel: String!
     createdAt: String!
     updatedAt: String!
@@ -33,21 +33,11 @@ export default gql`
         message: String!
         success: Boolean
     }
-    # type PostPaginator {
-    #     posts: [Post!]!
-    #     paginator: Paginator!
-    # }
-#   type Paginator {
-#       slNo: Int
-#       prev: Int
-#       next: Int
-#       perPage: Int
-#       totalPosts: Int
-#       totalPages: Int
-#       currentPage: Int
-#       hasPrevPage: Boolean
-#       hasNextPage: Boolean
-#   }
+    type SupplierPaginator {
+        suppliers: [Supplier!]!
+        paginator: Paginator!
+    }
+
 
   
 

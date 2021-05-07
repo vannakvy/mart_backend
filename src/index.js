@@ -10,6 +10,7 @@ import * as AppModels from "./models";
 import typeDefs from "./graphql/typeDefs";
 import resolvers from "./graphql/resolvers";
 import AuthMiddleware from "./middlewares/auth";
+import connectDB from './config/db'
 
 const app = express();
 // Remove x-powered-by header
@@ -40,9 +41,10 @@ const server = new ApolloServer({
 
 // Function to start express and apollo server
 const startApp = async () => {
+
+  connectDB()
   try {
     // Connect With MongoDB Database
-
 
     // Apply Apollo-Express-Server Middlware to express application
     server.applyMiddleware({

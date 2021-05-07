@@ -89,7 +89,6 @@ export default {
          
     createPost: async (_, { newPost }, { Post, user }) => {
       const { title, content } = newPost;
-
       // Validate the incoming new Post arguments
       await NewPostRules.validate(
         {
