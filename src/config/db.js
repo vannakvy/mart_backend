@@ -7,7 +7,7 @@ dotenv.config()
 
 const connectDB =   async()=>{
     try{
-        const conn =  await mongoose.connect(DB,{useUnifiedTopology:false,useNewUrlParser: true,useCreateIndex: true })
+        const conn =  await mongoose.connect(DB,{useFindAndModify: false,useUnifiedTopology:false,useNewUrlParser: true,useCreateIndex: true })
         success({
             badge: true,
             message: `Successfully connected with the database ${conn.connection}`,

@@ -12,7 +12,7 @@ const supplierSchema = new Schema({
     },
     address:{
         type: Schema.Types.ObjectId,
-        ref: 'Address'
+        ref: 'address'
     },
     tel: String,
 }, {

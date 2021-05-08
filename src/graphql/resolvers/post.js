@@ -6,7 +6,7 @@ const PostLabels = {
   limit: "perPage",
   nextPage: "next",
   prevPage: "prev",
-  meta: "paginator",
+  meta: "paginator",  
   page: "currentPage",
   pagingCounter: "slNo",
   totalDocs: "totalPosts",
@@ -56,7 +56,6 @@ export default {
     },
 //    @DESC to Get Posts by Pagination variables
 //    @Access Public
-     
     getMyPostsWithPagination: async (_, { page, limit }, { Post, user }) => {
       const options = {
         page: page || 1,

@@ -1,3 +1,4 @@
 export * from './post';
 export * from './user';
-export * from './supplier'
+export * from './supplier';
+export * from './address';

@@ -4,7 +4,7 @@ import user from '../typeDefs/user';
 
 
 const SupplierLabels = {
-    docs: "posts",
+    docs: "suppliers",
     limit: "perPage",
     nextPage: "next",
     prevPage: "prev",
@@ -19,17 +19,17 @@ const SupplierLabels = {
         //   @DESC get all the suppliers 
         //   @access private 
         allSuppliers: async(_,{},{Supplier})=>{
-            let suppliers = await Supplier.find().populate('address');
+            let suppliers = await Supplier.find().populate('address')
             return suppliers
         },
-        getPostById: async(_,{id},{Supplier})=>{
+        getSupplierById: async(_,{id},{Supplier})=>{
             let supplier = Supplier.findById(id).populate('address');
             return supplier
         },
 
         // @DESC get the suppliers by Pagination Variable 
         // @access Private 
-        getSupplierWithPagination:async(_,{page,limit,address_id},{Supplier})=>{
+        getSupplierWithPagination:async(_,{page,limit},{Supplier})=>{
             const options ={
                 page:page||1,
                 limit:limit||10,
@@ -38,41 +38,17 @@ const SupplierLabels = {
                     createdAt:-1,
                 },
                 populate:"address"
+                
             };
 
             let query ={};
-            if(address_id){
-                query={
-                    address:address_id
-                }
-            }
+           
             let suppliers = await Supplier.paginate(query,options);
+            console.log(suppliers)
             return suppliers;
         }
     },
 
-    //   @DESC get my my Supplier with pagination  
-    //   @access Public 
-    // getMyPostsWithPagination: async (_, { page, limit }, { Post, user }) => {
-    //     const options = {
-    //       page: page || 1,
-    //       limit: limit || 10,
-    //       customLabels: PostLabels,
-    //       sort: {
-    //         createdAt: -1,
-    //       },
-    //       populate: "author",
-    //     };
-  
-    //     let posts = await Post.paginate(
-    //       {
-    //         author: user.id,
-    //       },
-    //       options
-    //     );
-  
-    //     return posts;
-    //   },
 
   Mutation:{
             //   @DESC to Create new Supplier
@@ -83,10 +59,10 @@ const SupplierLabels = {
         //     }
         //  @Access Private
 
-        createSupplier:async(_,{newSupplier},{Supplier,user})=>{
+        createSupplier:async(_,{newSupplier},{Supplier})=>{
             const {firstName,lastName,tel} = newSupplier;
-            // validate the incoming new supplier arguments 
             console.log(newSupplier)
+            // validate the incoming new supplier arguments 
             await NewSupplierRules.validate({
                 firstName,
                 lastName,
@@ -95,12 +71,13 @@ const SupplierLabels = {
                 abortEarly:false
             });
             // once the validations are passed Create New Supplier
-
             const supplier = new Supplier({
                 ...newSupplier,
-                address: address.id
+                address: "60960008aeed6214842b7815"
+                
             });
             // save the supplier 
+        
             let result = await supplier.save();
             result={
                 ...result.toObject(),

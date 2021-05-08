@@ -1,5 +1,5 @@
 import {Schema,model} from 'mongoose'
-
+import Paginate from 'mongoose-paginate-v2';
 const addressSchema = new Schema({
     houseNumber: String,
     village:{
@@ -22,6 +22,8 @@ const addressSchema = new Schema({
 },{
     timestamps: true
 })
+
+addressSchema.plugin(Paginate);
 
 const Address = model("address",addressSchema)
 
