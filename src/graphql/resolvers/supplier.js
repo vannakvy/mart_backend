@@ -44,7 +44,7 @@ const SupplierLabels = {
             let query ={};
            
             let suppliers = await Supplier.paginate(query,options);
-            console.log(suppliers)
+
             return suppliers;
         }
     },
@@ -61,7 +61,6 @@ const SupplierLabels = {
 
         createSupplier:async(_,{newSupplier},{Supplier})=>{
             const {firstName,lastName,tel} = newSupplier;
-            console.log(newSupplier)
             // validate the incoming new supplier arguments 
             await NewSupplierRules.validate({
                 firstName,

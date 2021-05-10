@@ -4,12 +4,13 @@ import post from './post';
 import supplier from './supplier';
 import user from './user';
 import address from './address'
-
+import product from './product'
 export default [
     post,
     user,
     image,
     baseDefs,
     supplier,
-    address
+    address,
+    product
 ];

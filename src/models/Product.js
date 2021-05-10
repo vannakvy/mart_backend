@@ -29,7 +29,6 @@ const productSchema = mongoose.Schema({
     },
     productImage:{
         type: String,
-        
     },
     category:{
         type:String,

@@ -3,7 +3,7 @@ import user from './user';
 import image from './image';
 import supplier from './supplier';
 import address from './address'
-
+import product from './product'
 
 export default [
     post,
@@ -11,4 +11,5 @@ export default [
     image,
     supplier,
     address,
+    product,
 ]
