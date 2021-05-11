@@ -5,6 +5,7 @@ import supplier from './supplier';
 import user from './user';
 import address from './address'
 import product from './product'
+import order from './order'
 export default [
     post,
     user,
@@ -12,5 +13,6 @@ export default [
     baseDefs,
     supplier,
     address,
-    product
+    product,
+    order
 ];

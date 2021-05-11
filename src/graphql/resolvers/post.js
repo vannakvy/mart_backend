@@ -73,7 +73,6 @@ export default {
         },
         options
       );
-
       return posts;
     },
   },

@@ -4,7 +4,8 @@ import image from './image';
 import supplier from './supplier';
 import address from './address'
 import product from './product'
-
+import customReserver from './customReserver';
+import order from './order'
 export default [
     post,
     user,
@@ -12,4 +13,6 @@ export default [
     supplier,
     address,
     product,
-]
+    customReserver,
+    order,
+]  

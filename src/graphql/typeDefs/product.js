@@ -41,7 +41,6 @@ type Review{
 
 }
 
-
 type ProductPaginator {
         products: [Product!]!
         paginator: Paginator!
@@ -49,6 +48,7 @@ type ProductPaginator {
 type Product{
     id:ID!
     productName :String!
+    countInStock: Int!
     rating :Int!
     numOfReview :Int!
     productImage :String!
