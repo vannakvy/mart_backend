@@ -38,7 +38,7 @@ const orderSchema = new Schema(
 
 const removeQtyFromProduct=(data)=>{
 data.forEach( async(data)=>{
- await  Product.findByIdAndUpdate({_id: data.product.toString()}, {$inc: { countInStock: -data.qty} }, {new: true, upsert: true});
+ await  Product.findByIdAndUpdate({_id: data.product.toString()}, {$inc: { countInStock: -data.qty} }, {new: false, upsert: true});
 })
 }
 orderSchema.pre('save', async function(next) {
@@ -58,8 +58,6 @@ next()
 
 
 orderSchema.plugin(Paginate)
-
-
 const Order = model("order",orderSchema)
 
 export default Order;

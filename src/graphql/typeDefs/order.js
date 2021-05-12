@@ -7,15 +7,19 @@ extend type Query{
 allOrders: [Order!]!
 getOrderById(id:ID!):Order!
 getMyOrder(user_id:ID!):[Order!]!
-getOrderWithPagination(page:Int,limit:Int):[Order!]!
-getMyOrderWithPagination(page:Int,limit:Int,user_id:ID!):[Order!]
+getAllOrderWithPagination(page:Int,limit:Int):OrderPaginator!
+getMyOrderWithPagination(page:Int,limit:Int,user_id:ID!):OrderPaginator!
 
+}
+
+extend type Subscription {
+    newOrder: Order!
 }
 
 extend type Mutation{
     createOrderItem(newOrder:OrderInput!,user_id:ID!):Order!
     delete(id:ID!):OrderMessageResponse!
-    udateOrderConfirmed(id:ID!):OrderMessageResponse!
+    updateOrderConfirmed(id:ID!):OrderMessageResponse!
     updateOrderPaid(id:ID!):OrderMessageResponse! 
     updateOrderDelivered(id:ID!):OrderMessageResponse!
 }
