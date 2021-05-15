@@ -81,6 +81,7 @@ export default {
       return orders;
     },
   },
+  
   Subscription:{
     newOrder:{
       subscribe:(_,__,{pubsub})=> pubsub.asyncIterator(ORDER_CREATED)

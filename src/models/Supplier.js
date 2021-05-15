@@ -10,11 +10,26 @@ const supplierSchema = new Schema({
         type: String,
         required: true,
     },
-    address:{
-        type: Schema.Types.ObjectId,
-        ref: 'address'
-    },
+ 
     tel: String,
+    houseNumber: String,
+    village:{
+        type:String,
+        required:true
+    },
+    commune:{
+        type:String,
+        required:true
+    },
+    district:{
+        type:String,
+        required:true
+    },
+    province:{
+        type:String,
+        required:true
+    },
+    imgUrl: String 
 }, {
     timestamps: true
 });

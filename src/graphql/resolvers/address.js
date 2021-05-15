@@ -58,7 +58,7 @@ export default {
     // }
     // @access Authenticated
 
-    createAddress: async (_, { newAddress }, { Address,user }) => {
+    createAddress: async (_, { newAddress }, { Address }) => {
 
       const { houseNumber, village, commune, district, province } = newAddress;
       //validate the address using the address rule in the validation

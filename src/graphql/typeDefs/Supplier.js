@@ -19,16 +19,27 @@ export default gql`
     id: ID!
     firstName: String!
     lastName: String!
-    address: Address!
     tel: String!
+    houseNumber:Int
+     village: String! 
+     commune: String!
+     district: String! 
+     province: String!
     createdAt: String!
     updatedAt: String!
+    imgUrl:String!
   }
 
   input SupplierInput {
     firstName: String!
     lastName: String!
     tel: String!
+    houseNumber:Int
+     village: String! 
+     commune: String!
+     district: String! 
+     province: String!
+     imgUrl:String
   }
 
   type SupplierMessageResponse {
