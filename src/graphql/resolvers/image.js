@@ -10,6 +10,7 @@ export default {
   Query: {
     hello: () => "I am Image Upload Resolver.",
   },
+  
   Mutation: {
     imageUploader: async (_, { file }) => {
       try {

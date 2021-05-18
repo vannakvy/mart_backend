@@ -11,7 +11,7 @@ export default gql `
     }
 
     extend type Mutation {
-        createPost(newPost: PostInput): Post! @isAuth
+        createPost(newPost: PostInput): Post! 
         deletePost(id: ID!): PostMessageResponse! @isAuth
         updatePost(updatedPost: PostInput, id: ID!): Post! @isAuth
     }

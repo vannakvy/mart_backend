@@ -56,7 +56,20 @@ export default {
     //  @Access Private
 
     createSupplier: async (_, { newSupplier }, { Supplier }) => {
-      const { firstName, lastName, tel } = newSupplier;
+      const {        
+        firstName,
+        lastName,
+        tel,
+        houseNumber,
+        village,
+        commune,
+        district,
+        province,
+        email,
+        gender,
+        imageUrl
+       } = newSupplier;
+     
       // validate the incoming new supplier arguments
       await NewSupplierRules.validate(
         {
@@ -68,6 +81,8 @@ export default {
           commune,
           district,
           province,
+          email,
+
         },
         {
           abortEarly: false,
@@ -97,6 +112,7 @@ export default {
       try {
         let {
           firstName,
+          email,
           lastName,
           tel,
           houseNumber,
@@ -104,11 +120,12 @@ export default {
           commune,
           district,
           province,
-          imgUrl,
+          imageUrl,
+          gender
         } = updatedSupplier;
         await NewSupplierRules.validate(
           {
-            firstname,
+            firstName,
             lastName,
             tel,
             houseNumber,
@@ -116,7 +133,7 @@ export default {
             commune,
             district,
             province,
-            imgUrl,
+            email
           },
           {
             abortEarly: false,
@@ -146,7 +163,7 @@ export default {
     //    @Params id!
     //    @Access Private
 
-    deleteSupplier: async (_, { id }, { Supplier, address }) => {
+    deleteSupplier: async (_, { id }, { Supplier }) => {
       try {
         let supplier = await Supplier.findOneAndDelete({
           _id: id,

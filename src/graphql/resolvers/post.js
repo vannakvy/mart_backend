@@ -85,8 +85,10 @@ export default {
         //     }
         //  @Access Private
          
-    createPost: async (_, { newPost }, { Post, user }) => {
+    createPost: async (_, { newPost }, { Post }) => {
       const { title, content } = newPost;
+  
+    
       // Validate the incoming new Post arguments
       await NewPostRules.validate(
         {
@@ -100,10 +102,10 @@ export default {
       // Once the Validations are passed Create New Post
       const post = new Post({
         ...newPost,
-        author: user.id,
       });
       // Save the post
       let result = await post.save();
+   
       result = {
         ...result.toObject(),
         id: result._id.toString(),

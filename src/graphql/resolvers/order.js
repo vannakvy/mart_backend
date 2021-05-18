@@ -20,6 +20,8 @@ export default {
     //@access private
     allOrders: async (_, {}, { Order }) => {
       const orders = await Order.find().populate("user");
+      // const orders = await Order.find({'orderItems.name': 'coke'} ).populate("user");
+
       return orders;
     },
 

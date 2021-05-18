@@ -2,6 +2,7 @@ import {model,Schema} from 'mongoose';
 import Paginate from 'mongoose-paginate-v2';
 
 const supplierSchema = new Schema({
+    email:String,
     firstName: {
         type: String,
         required: true,
@@ -29,7 +30,12 @@ const supplierSchema = new Schema({
         type:String,
         required:true
     },
-    imgUrl: String 
+    gender:String,
+    imageUrl: {
+        type:String,
+        required:true,
+        default:"http://localhost:5000\Screenshot_-2--1621322292578.png"
+    }
 }, {
     timestamps: true
 });

@@ -10,8 +10,8 @@ export default gql`
     ): SupplierPaginator!
   }
   extend type Mutation {
-    createSupplier(newSupplier: SupplierInput): Supplier! @isAuth
-    deleteSupplier(id: ID!): SupplierMessageResponse! @isAuth
+    createSupplier(newSupplier: SupplierInput!): Supplier! 
+    deleteSupplier(id: ID!): SupplierMessageResponse! 
     updateSupplier(updatedSupplier: SupplierInput, id: ID!): Supplier! @isAuth
   }
 
@@ -27,7 +27,9 @@ export default gql`
      province: String!
     createdAt: String!
     updatedAt: String!
-    imgUrl:String!
+    imageUrl:String
+    email:String
+    gender:String
   }
 
   input SupplierInput {
@@ -39,7 +41,9 @@ export default gql`
      commune: String!
      district: String! 
      province: String!
-     imgUrl:String
+     imageUrl:String
+     email:String
+     gender:String
   }
 
   type SupplierMessageResponse {
