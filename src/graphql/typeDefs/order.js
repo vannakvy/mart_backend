@@ -4,6 +4,7 @@ import {gql} from 'apollo-server-express'
 export default gql`
 
 extend type Query{
+classifyNumberOfProductSold: orderedProductSpecified!
 allOrders: [Order!]!
 getOrderById(id:ID!):Order!
 getNewOrder:numOfNewOrder!
@@ -23,6 +24,12 @@ extend type Mutation{
     updateOrderConfirmed(id:ID!,data:Boolean!):OrderMessageResponse!
     updateOrderPaid(id:ID!,data:Boolean!):OrderMessageResponse! 
     updateOrderDelivered(id:ID!,data:Boolean!):OrderMessageResponse!
+}
+
+type orderedProductSpecified{
+    food: Int !
+    drink: Int! 
+    grocery: Int!
 }
 
 

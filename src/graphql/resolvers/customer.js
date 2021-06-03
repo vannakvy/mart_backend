@@ -32,7 +32,6 @@ export default {
       },
 
 
-
     getCustomerById: async (_, { id }, { Customer }) => {
       let customer = Customer.findById(id);
       return customer;

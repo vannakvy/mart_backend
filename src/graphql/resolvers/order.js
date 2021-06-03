@@ -30,7 +30,15 @@ export default {
       const orders = await Order.find().populate('user').sort({ createdAt: 1 }).limit(5);
       return orders
     },
+    // @Des get the total number of item based on category sold 
+    //@Access admin
 
+    classifyNumberOfProductSold:async(_,{},{Order, Product})=>{
+      var prodId = await Order.distinct("orderItems.product")
+    var a =await   Order.aggregate([{"$match":{"_id":{"$in":prodId}}},{"$group":{"_id":"$name","sum":{"$sum":1}}}])
+      console.log(a)
+      return 
+    },
 
     //@Des get new order fof updating the notification 
     //access private 

@@ -27,12 +27,13 @@ export default {
     },
 
     budgets: async (_, {}, { Purchase }) => {
-      let total = await   Purchase.aggregate([ { $group: { _id: "", TotalSum: { $sum: "$price" } } } ]);
-    console.log(total)
-    
-      return total;
+      let total = await   Purchase.aggregate([ { $group: { _id: "   ", TotalSum: { $sum: "$price" } } } ]);
+  console.log(total)
+      return {
+        id: total[0]._id,
+        sum: total[0].TotalSum
+      };
     },
-
 
 
     getPurchaseById: async (_, { id }, { Purchase }) => {
