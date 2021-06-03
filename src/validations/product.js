@@ -15,7 +15,7 @@ const productImage = yup
     .string()
     .required('category of the Blog is required.')
     .min(2, 'category of the Blog should have atleast 5 characters.')
-    .max(3000, 'category of the Blog should have atmost 3000 characters.');
+    .max(30, 'category of the Blog should have atmost 3000 characters.');
 
     const description = yup
     .string()

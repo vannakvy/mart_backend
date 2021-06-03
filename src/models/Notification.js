@@ -1,14 +1,16 @@
   import mongoose from 'mongoose'
 
   const notificationSchema = mongoose.Schema({
-date:{
-    type: Date,
-    required: true,
-    default: Date.now()
-},
+eventType:String,
 message:{
     type: String,
     required: true
+},
+allClient:{type:Boolean, required:true,default:false},
+user:{
+  type: mongoose.Schema.Types.ObjectID,
+  required: false, 
+  ref:'users'
 }
   },{
       timestamps:true

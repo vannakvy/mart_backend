@@ -6,6 +6,9 @@ import user from './user';
 import address from './address'
 import product from './product'
 import order from './order'
+import customer from './customer'
+import notification from './notification'
+import purchase from './purchase'
 export default [
     post,
     user,
@@ -14,5 +17,8 @@ export default [
     supplier,
     address,
     product,
-    order
+    order,
+    customer,
+    notification,
+    purchase
 ];

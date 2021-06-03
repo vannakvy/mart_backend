@@ -6,12 +6,13 @@ export default gql`
 extend type Query{
 allOrders: [Order!]!
 getOrderById(id:ID!):Order!
+getNewOrder:numOfNewOrder!
 getMyOrder(user_id:ID!):[Order!]!
+getLatestOrder:[Order!]!
 getAllOrderWithPagination(page:Int,limit:Int):OrderPaginator!
 getMyOrderWithPagination(page:Int,limit:Int,user_id:ID!):OrderPaginator!
 
 }
-
 extend type Subscription {
     newOrder: Order!
 }
@@ -19,9 +20,9 @@ extend type Subscription {
 extend type Mutation{
     createOrderItem(newOrder:OrderInput!,user_id:ID!):Order!
     delete(id:ID!):OrderMessageResponse!
-    updateOrderConfirmed(id:ID!):OrderMessageResponse!
-    updateOrderPaid(id:ID!):OrderMessageResponse! 
-    updateOrderDelivered(id:ID!):OrderMessageResponse!
+    updateOrderConfirmed(id:ID!,data:Boolean!):OrderMessageResponse!
+    updateOrderPaid(id:ID!,data:Boolean!):OrderMessageResponse! 
+    updateOrderDelivered(id:ID!,data:Boolean!):OrderMessageResponse!
 }
 
 
@@ -50,7 +51,9 @@ input OrderInput{
     shippingAddress:ShipAddressInput!
     taxPrice:Int
 }
-
+type numOfNewOrder{
+    num: Int!
+}
 scalar Date
 type Order{
     id:ID!
@@ -66,7 +69,7 @@ type Order{
     isDelivered: Boolean!
     deliveredAt: Date
     orderConfirmed: Boolean!
-    orderConfiredAt: Date
+    orderConfirmedAt   : Date
     createdAt:Date 
     updatedAt: Date
 }

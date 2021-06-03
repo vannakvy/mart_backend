@@ -12,7 +12,7 @@ export default gql`
   extend type Mutation {
     createSupplier(newSupplier: SupplierInput!): Supplier! 
     deleteSupplier(id: ID!): SupplierMessageResponse! 
-    updateSupplier(updatedSupplier: SupplierInput, id: ID!): Supplier! @isAuth
+    updateSupplier(updatedSupplier: SupplierInput, id: ID!): SupplierMessageResponse!
   }
 
   type Supplier {
@@ -45,7 +45,6 @@ export default gql`
      email:String
      gender:String
   }
-
   type SupplierMessageResponse {
     message: String!
     success: Boolean

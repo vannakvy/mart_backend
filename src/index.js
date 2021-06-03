@@ -26,12 +26,12 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   schemaDirectives,
+  uploads: true,
   context: ({ req }) => {
-
-    return { req,  pubsub, ...AppModels };
+    return { req, pubsub, ...AppModels };
   },
   subscriptions: {
-   
+    path: "/graphql",
     onConnect: async (connectionParams, webSocket, context) => {
       console.log("connection");
     },
@@ -50,7 +50,7 @@ const startApp = async () => {
     server.applyMiddleware({
       app,
       cors: true,
-    });
+    });   
 
     const httpServer = http.createServer(app);
     server.installSubscriptionHandlers(httpServer);

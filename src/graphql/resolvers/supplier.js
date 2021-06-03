@@ -154,7 +154,10 @@ export default {
         }
         // populate the Author Fields
 
-        return supplier;
+        return {
+          success: true,
+          message: "Supplier Updated Successfully !"
+        };
       } catch (error) {
         throw new ApolloError(error.message);
       }

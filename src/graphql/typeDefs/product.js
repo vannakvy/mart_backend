@@ -1,7 +1,8 @@
 import { gql } from "apollo-server-express";
 export default gql`
     extend type Query{
-        allProducts:[Product!]!
+        allProducts(type:String):[Product!]!
+        totalProduct: Int!
         getProductById(id:ID!):Product!
         getTopProducts:[Product!]!
         getProductsWithPagination(page:Int,limit:Int): ProductPaginator!
@@ -9,13 +10,15 @@ export default gql`
 
     }
     extend type Mutation{
-    createProduct(newProduct: ProductInput):Product! @isAuth
-    deleteProduct(id:ID!): ProductMessageResponse! @isAuth 
-    updateProduct(updatedProduct: ProductInput!,id:ID! ): Product! @isAuth
-    reviewProduct(newReview:ReviewInput,user_id:ID,id:ID):ProductMessageResponse! @isAuth 
-    deleteReview(id:ID):ProductMessageResponse! @isAuth
+    createProduct(newProduct: ProductInput):ProductMessageResponse! 
+    deleteProduct(id:ID!): ProductMessageResponse! 
+    updateProduct(updatedProduct: ProductInput!,id:ID! ): ProductMessageResponse!
+    reviewProduct(newReview:ReviewInput,user_id:ID,id:ID):ProductMessageResponse!
+    deleteReview(id:ID!,user_id:ID!):ProductMessageResponse!
+    updateProductPrice(id:ID!,price:Int!): ProductMessageResponse
+    updateProductCountInstock(id:ID!,countInStock:Int!):ProductMessageResponse
+    updateproductImage(id:ID!,file:String!):ProductMessageResponse
     } 
-
     input ProductInput{
     productName :String!
     productImage :String!
@@ -34,6 +37,7 @@ type ProductMessageResponse {
     }
 
 type Review{
+    id:ID!
     name:String!
     rating:Int
     comment: String!
@@ -52,10 +56,12 @@ type Product{
     rating :Int!
     numOfReview :Int!
     productImage :String!
+    price:Int!
     category :String!
     description :String!
     review: [Review!]!
+    createdAt: Date 
+    updatedAt: Date
 }
-
 
 `;

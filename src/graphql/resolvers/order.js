@@ -20,11 +20,26 @@ export default {
     //@access private
     allOrders: async (_, {}, { Order }) => {
       const orders = await Order.find().populate("user");
-      // const orders = await Order.find({'orderItems.name': 'coke'} ).populate("user");
-
+      // const orders = await Order.countDocuments({'orderItems.name': 'coke'} ).populate("user");
       return orders;
     },
 
+    //@desc get the latest order and limit 
+    //@Access admin 
+    getLatestOrder:async (_, {},{Order})=>{
+      const orders = await Order.find().populate('user').sort({ createdAt: 1 }).limit(5);
+      return orders
+    },
+
+
+    //@Des get new order fof updating the notification 
+    //access private 
+   getNewOrder :async(_,{},{Order})=>{
+    const num = await Order.countDocuments({orderConfirmed:false});
+    return {
+      num
+    };
+   },
     //@Get one order
     //@access private
     getOrderById: async (_, { id }, { Order }) => {
@@ -93,9 +108,9 @@ export default {
     // @Desc update the order confirmed
     //@access  private (admin)
 
-    updateOrderConfirmed: async (_, { id }, { Order }) => {
+    updateOrderConfirmed: async (_, { id,data }, { Order }) => {
       try {
-        const a = await Order.findByIdAndUpdate({_id:id},{"orderConfirmed":true});
+        await Order.findByIdAndUpdate({_id:id},{"orderConfirmed":!data,"orderConfirmedAt": new Date()});
         return {
           success: true,
           message: "Order Confirmed",
@@ -111,14 +126,15 @@ export default {
     // @Desc update the order confirmed
     //@access  private (admin)
 
-    updateOrderPaid: async (_, { id }, { Order }) => {
+    updateOrderPaid: async (_, { id,data }, { Order }) => {
       try {
-       await Order.findByIdAndUpdate({_id:id},{"isPaid":true});
+        const order = await Order.findByIdAndUpdate({_id:id},{"isPaid":!data,"paidAt":new Date()});
         return {
           success: true,
-          message: "Order Paid",
+          message: "Order Paid dddddd",
         };
       } catch (error) {
+  
         return {
           success: false,
           message: "Order is not Paid ",
@@ -129,9 +145,9 @@ export default {
         // @Desc update the order confirmed
     //@access  private (admin)
 
-    updateOrderDelivered: async (_, { id }, { Order }) => {
+    updateOrderDelivered: async (_, { id,data }, { Order }) => {
       try {
-       await Order.findByIdAndUpdate({_id:id},{"isDelivered":true});
+       await Order.findByIdAndUpdate({_id:id},{"isDelivered":!data,"deliveredAt":new Date()});
         return {
           success: true,
           message: "Order Delivered",

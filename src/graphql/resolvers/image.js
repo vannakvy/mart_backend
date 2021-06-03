@@ -14,24 +14,26 @@ export default {
   Mutation: {
     imageUploader: async (_, { file }) => {
       try {
-        const { filename, createReadStream } = await file;
-        let stream = createReadStream();
-        let { ext, name } = parse(filename);
-        name = name.replace(/([^a-z0-9 ]+)/gi, "-").replace(" ", "_");
-        let serverFile = join(
-          __dirname,
-          `../../uploads/${name}-${Date.now()}${ext}`
-        );
+        // const { filename, createReadStream } = await file;
+        // let stream = createReadStream();
+        // let { ext, name } = parse(filename);
+        // name = name.replace(/([^a-z0-9 ]+)/gi, "-").replace(" ", "_");
+        // let serverFile = join(
+        //   __dirname,
+        //   `../../uploads/${name}-${Date.now()}${ext}`
+        // );
 
-        serverFile = serverFile.replace(" ", "_");
+        // serverFile = serverFile.replace(" ", "_");
 
-        let writeStream = await createWriteStream(serverFile);
+        // let writeStream = await createWriteStream(serverFile);
 
-        await stream.pipe(writeStream);
+        // await stream.pipe(writeStream);
 
-        serverFile = `${process.env.BASE_URL}${serverFile.split("uploads")[1]}`;
+        // serverFile = `${process.env.BASE_URL}${serverFile.split("uploads")[1]}`;
         
-        return serverFile;
+        // return serverFile;
+
+        console.log(file)
       } catch (err) {
         throw new ApolloError(err.message);
       }

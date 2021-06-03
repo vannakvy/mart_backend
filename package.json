@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "start": "node -r esm .",
-    "dev": "nodemon -r esm",
+    "server": "nodemon -r esm",
+    "client": "npm start --prefix frontend",
+    "dev":"concurrently \"npm run server\" \"npm run client\"",
     "preinstall": "npx npm-force-resolutions"
   },
   "resolutions": {
@@ -19,6 +21,7 @@
     "apollo-server-express": "^2.17.0",
     "bcryptjs": "^2.4.3",
     "body-parser": "^1.19.0",
+    "concurrently": "^6.2.0",
     "consola": "^2.15.0",
     "cors": "^2.8.5",
     "dotenv": "^8.2.0",

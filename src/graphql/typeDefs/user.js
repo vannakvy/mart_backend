@@ -5,11 +5,12 @@ import {
 export default gql `
     extend type Query {
         authUser: User! @isAuth
-        loginUser(username: String!, password: String!):AuthUser!
+       
     }
 
     extend type Mutation {
         registerUser(newUser: UserInput!): AuthUser!
+        loginUser(username: String!, password: String!):AuthUser!
     }
 
     input UserInput {

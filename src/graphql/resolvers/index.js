@@ -6,6 +6,9 @@ import address from './address'
 import product from './product'
 import customReserver from './customReserver';
 import order from './order'
+import customer from './customer';
+import purchase from './purchase'
+import notification from './notification'
 export default [
     post,
     user,
@@ -15,4 +18,7 @@ export default [
     product,
     customReserver,
     order,
+    customer,
+    notification,
+    purchase,
 ]  

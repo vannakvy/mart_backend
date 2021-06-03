@@ -12,7 +12,20 @@ import {
 export default {
   // Standarad User Query Property
   Query: {
+  
+    
     /**
+     * @DESC to get the authenticated User
+     * @Headers Authorization
+     * @Access Private
+     */
+    authUser: (_, __, { req: { user } }) => user,
+  },
+  // Standarad User Mutation Property
+  
+  Mutation: {
+
+      /**
      * @DESC to authenticate using parameters
      * @Params { username, password }
      * @Access Public
@@ -45,15 +58,6 @@ export default {
         token,
       };
     },
-    /**
-     * @DESC to get the authenticated User
-     * @Headers Authorization
-     * @Access Private
-     */
-    authUser: (_, __, { req: { user } }) => user,
-  },
-  // Standarad User Mutation Property
-  Mutation: {
     /**
      * @DESC to Register new user
      * @Params newUser{ username, firstName, lastName, email, password }

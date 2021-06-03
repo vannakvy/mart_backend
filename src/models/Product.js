@@ -9,7 +9,7 @@ const reviewSchema = mongoose.Schema({
     user:{
         type: mongoose.Schema.Types.ObjectId,
         required: true,
-        ref: "User"
+        ref: "users"
     }
 })
 const productSchema = mongoose.Schema({
@@ -35,13 +35,20 @@ const productSchema = mongoose.Schema({
     },
     category:{
         type:String,
-        enum: ["Fresh Food","Drink","Food"],
+        enum: ["Grocery","Drink","Food"],
+        required: true
+    },
+    price:{
+        type:String,
+        default: 0,
         required: true
     },
     description:{
         type:String
     },
     review:[reviewSchema]
+},{
+    timestamps: true
 })
 
 productSchema.plugin(Paginate);

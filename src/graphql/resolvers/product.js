@@ -18,16 +18,29 @@ export default {
     //@Desc get all the products
     // @Access private
 
-    allProducts: async (_, {}, { Product }) => {
-      let products = await Product.find();
+    allProducts: async (_, {type}, { Product }) => {
+      let products;
+     if(type!==""){
+      products = await Product.find({'category':type})
+     }else{
+      products = await Product.find();
+     }
       return products;
+    },
+// @Desc get ttotal number of product 
+//@access private
+
+
+    totalProduct: async (_, {}, { Product }) => {
+    let  total = await Product.countDocuments({});
+      return total;
     },
 
     //@Desc get one product by Id
     //Access public
 
     getProductById: async (_, { id }, { Product }) => {
-      let product = await Product.findById(id);
+      let product = await Product.findById(id).populate("review.user");
       return product;
     },
     //Desc get the product with the pagination
@@ -65,42 +78,11 @@ export default {
       return products;
     },
 
-    // getProductsByCategoryWithPagination: async (_,{page,limit,category},{Product})=>{
-    // const options = {
-    //     page:page||1,
-    //     limit:limit|| 10,
-    //     customLabels:ProductLabels,
-    //     sort:{
-    //         createdAt:-1,
-    //     }
-    // }
-    // let products = await Product.paginate({category:category},options);
-    // return products
-    // },
-
-    // @Desc get product by pagination variable
-    //@access Public
-
-    // getMyProductsWithPagination:async (_,{page,limit},{Product,user})=>{
-    //     const options ={
-    //         page:page||1,
-    //         limit:limit|| 10,
-    //         customLabels:ProductLabels,
-    //         sort:{
-    //             createdAt:-1,
-    //         }
-    //     }
-    //     let query = {}
-    //     if(user){
-
-    //     }
-    // }
-
     //Desc get the top reviewed products
     //Access public
 
     getTopProducts: async (_, {}, { Product }) => {
-      const products = Product.find({}).sort({ rating: -1 }).limit(3);
+      const products = Product.find({}).sort({ rating: -1 }).limit(5);
       return products;
     },
   },
@@ -133,7 +115,12 @@ export default {
       });
 
       let result = await product.save();
-      return result;
+      if (result) {
+        return {
+          success: true,
+          message: "Product Created Successfully !",
+        };
+      }
     },
     //Desc Delete Product
     //Access Private
@@ -152,18 +139,30 @@ export default {
         throw new ApolloError(error.message);
       }
     },
+//Desc Updating the product image 
+//@acess private 
 
+updateproductImage:async (_, {id,file},{Product})=>{
+  try {
+    await Product.update({ _id: id }, { $set: { productImage: file } });
+    return {
+      message: "Updated the product Image succesfully",
+      success: true,
+    };
+  } catch (error) {
+    return {
+      message: "Cannot update the Image ",
+      success: false,
+    };
+  }
+},
     //Desc updating the product
     // access private only the admin can delete this
 
     updateProduct: async (_, { updatedProduct, id }, { Product }) => {
       try {
-        const {
-          productName,
-          productImage,
-          category,
-          description,
-        } = updatedProduct;
+        const { productName, productImage, category, description } =
+          updatedProduct;
         //validate the incoming updated data
         await NewProductRules.validate(
           {
@@ -177,11 +176,18 @@ export default {
           }
         );
 
-        let product = Product.findOneAndUpdate({ _id: id }, updatedProduct);
+        let product = await Product.findOneAndUpdate(
+          { _id: id },
+          updatedProduct
+        );
+
         if (!product) {
           throw new ApolloError("There is not this kind of product");
         }
-        return product;
+        return {
+          message: "Updated Product successfully!",
+          success: true,
+        };
       } catch (error) {
         throw new ApolloError(error.message);
       }
@@ -196,35 +202,102 @@ export default {
       const currentUser = await User.findById(user_id);
 
       if (product) {
-        
-          const alreadyReviewed = product.review.find(
-            (r) => r.user.toString() === currentUser._id.toString()
-          );
-          if (alreadyReviewed) {
-            return {
-              message: "You have alread review this product",
-              success: false,
-            };
-          }
-
-          const review = {
-            name: currentUser.username,
-            rating: Number(rating),
-            comment,
-            user: currentUser._id,
-          };
-          product.review.push(review);
-          product.numOfReview = product.review.length;
-          product.rating =
-            product.review.reduce((acc, item) => item.rating + acc, 0) /
-            product.review.length;
-          await product.save();
+        const alreadyReviewed = product.review.find(
+          (r) => r.user.toString() === currentUser._id.toString()
+        );
+        if (alreadyReviewed) {
           return {
-            message: "Review created",
-            success: true,
+            message: "You have alread review this product",
+            success: false,
           };
         }
+
+        const review = {
+          name: currentUser.username,
+          rating: Number(rating),
+          comment,
+          user: currentUser._id,
+        };
+        product.review.push(review);
+        product.numOfReview = product.review.length;
+        product.rating =
+          product.review.reduce((acc, item) => item.rating + acc, 0) /
+          product.review.length;
+        await product.save();
+        return {
+          message: "Review created",
+          success: true,
+        };
       }
-    
+    },
+
+    //Desc Delete Comment and review
+    //@access Private
+    deleteReview: async (_, { id, user_id }, { Product }) => {
+      try {
+        //check if the comment exist or not
+        const res = await Product.findOne({ "review._id": id });
+        const hasThisReview = res.review.find(
+          (r) => r.user.toString() === user_id.toString()
+        );
+
+        if (!hasThisReview) {
+          return {
+            success: false,
+            message: "Cannot Delete this comment!",
+          };
+        }
+        // //
+        await res.review.id(hasThisReview._id).remove();
+        await res.save()
+        return {
+          success: true,
+          message: "Delete Comment Successfully",
+        };
+
+      } catch (error) {
+        return {
+          success: false,
+          message: "Cannot Delete this comment!",
+        };
+      
+      }
+    },
+    //Desc Update product price by id
+    //access private
+    updateProductPrice: async (_, { price, id }, { Product }) => {
+      try {
+        await Product.update({ _id: id }, { $set: { price: price } });
+
+        return {
+          message: "Updated the product price succesfully",
+          success: true,
+        };
+      } catch (error) {
+        return {
+          message: "Cannot update the price ",
+          success: false,
+        };
+      }
+    },
+
+    updateProductCountInstock: async (_, { id, countInStock }, { Product }) => {
+      try {
+        await Product.update(
+          { _id: id },
+          { $set: { countInStock: countInStock } }
+        );
+
+        return {
+          message: "Updated the product countInStock succesfully",
+          success: true,
+        };
+      } catch (error) {
+        return {
+          message: "Cannot update the countInStock ",
+          success: false,
+        };
+      }
+    },
   },
 };
