@@ -10,6 +10,7 @@ const orderSchema = new Schema(
         name:String,
         qty:{type:Number,required:true,default:0},
         image:String,
+        category:String,
         salePrice:{type: Number,required:true,default:0},
         product: {type: Schema.Types.ObjectId,required: String,ref: "Product"},
       },

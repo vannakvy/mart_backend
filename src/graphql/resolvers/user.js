@@ -9,23 +9,121 @@ import {
   UserAuthenticationRules,
 } from "../../validations";
 
+
+
 export default {
   // Standarad User Query Property
   Query: {
-  
-    
     /**
      * @DESC to get the authenticated User
      * @Headers Authorization
      * @Access Private
      */
     authUser: (_, __, { req: { user } }) => user,
+
+    // @Desc get all users 
+    // @Access 
+
+    allUsers:async(_,{},{User})=>{
+      const users = await User.find({})
+      // throw new ApolloError("Username not found", "404");
+      return users;
+    },
+    getUserById:async(_,{userId},{User})=>{
+      const user = await User.findById(userId)
+      if(!user){
+         throw new ApolloError("There is no user with this id", "404");
+      }
+      return user
+    }
   },
   // Standarad User Mutation Property
   
   Mutation: {
-
       /**
+     * @DESC to authenticate using parameters
+     * @Params { username, password }
+     * @Access Public
+     */
+       loginUser: async (_, { username, password }, { User }) => {
+        // Validate Incoming User Credentials
+        await UserAuthenticationRules.validate(
+          { username, password },
+          { abortEarly: false }
+        );
+        // Find the user from the database
+        let user = await User.findOne({
+          username,
+        });
+        // If User is not found
+        if (!user) {
+          throw new ApolloError("Username not found", "404");
+        }
+        // If user is found then compare the password
+        let isMatch = compare(password, user.password);
+        // If Password don't match
+        if (!isMatch) {
+          throw new ApolloError("Username not found", "403");
+        }
+        user = await serializeUser(user);
+        // Issue Token
+        let token = await issueAuthToken(user);
+        return {
+          user,
+          token,
+        };
+      },
+      /**
+       * @DESC to Register new user
+       * @Params newUser{ username, firstName, lastName, email, password }
+       * @Access Public
+       */
+      registerUser: async (_, { newUser }, { User }) => {
+      
+        try {
+          let { email, username } = newUser;
+  
+          // Validate Incoming New User Arguments
+          await UserRegisterationRules.validate(newUser, { abortEarly: false });
+          // Check if the Username is taken
+          let user = await User.findOne({
+            username,
+          });
+          if (user) {
+            throw new ApolloError("Username is already taken.", "403");
+          }
+  
+          // Check is the Email address is already registred
+          user = await User.findOne({
+            email,
+          });
+          if (user) {
+            throw new ApolloError("Email is already registred.", "403");
+          }
+          
+          // New User's Account can be created
+          user = new User(newUser);
+          
+        await user.roles.push({role:newUser.role})
+       
+          // Hash the user password
+          user.password = await hash(user.password, 10);
+          // Save the user to the database
+          let result = await user.save();
+   
+          result = await serializeUser(result);
+          // Issue Token
+          let token = await issueAuthToken(result);
+  
+          return {
+            token,
+            user: result,
+          };
+        } catch (err) {
+          throw new ApolloError(err.message);
+        }
+      },
+   /**
      * @DESC to authenticate using parameters
      * @Params { username, password }
      * @Access Public
@@ -69,7 +167,6 @@ export default {
 
         // Validate Incoming New User Arguments
         await UserRegisterationRules.validate(newUser, { abortEarly: false });
-
         // Check if the Username is taken
         let user = await User.findOne({
           username,
@@ -85,18 +182,21 @@ export default {
         if (user) {
           throw new ApolloError("Email is already registred.", "403");
         }
-
+        
         // New User's Account can be created
         user = new User(newUser);
-
+        
+      await user.roles.push({role:newUser.role})
+     
         // Hash the user password
         user.password = await hash(user.password, 10);
-
         // Save the user to the database
         let result = await user.save();
+ 
         result = await serializeUser(result);
         // Issue Token
         let token = await issueAuthToken(result);
+
         return {
           token,
           user: result,
@@ -105,5 +205,94 @@ export default {
         throw new ApolloError(err.message);
       }
     },
+
+
+     /**
+     * @DESC to Update  user
+     * @Params newUser{ username, firstName, lastName, email, password }
+     * @Access Private
+     */
+      updateUser: async (_, { updatedUser,userId }, { User }) => {
+    
+        try {
+          let { email, username } = updatedUser;
+  
+          // Validate Incoming New User Arguments
+          await UserRegisterationRules.validate(updatedUser, { abortEarly: false });
+          // Check if the Username is taken
+          let user = await User.findOne({
+            username,
+          });
+          // if (user && user.id!==userId) {
+          //   throw new ApolloError("This username is already taken .", "404");
+          // }
+  
+          // Check is the Email address is already registred
+          user = await User.findOne({
+            email,
+          });
+          if (user && user.id !==userId ) {
+            throw new ApolloError("Email is already registred.", "403");
+          }
+          
+      
+          // user = new User(newUser);
+          user.username = updatedUser.username
+          user.firstName = updatedUser.firstName 
+          user.lastName = updatedUser.lastName 
+          user.email = updatedUser.email
+          if(updatedUser==="empty"){
+            user.password === password
+          }else{
+            // Hash the user password
+            user.password = await hash(updatedUser.password, 10);
+          }
+         let role = user.roles.find(a=>a.role ===updatedUser.role);
+         if(!role){
+          user.roles.push({role:updatedUser.role})
+         }
+          
+          // Save the user to the database
+          let result = await user.save();
+          result = await serializeUser(result);
+          // Issue Token
+           await issueAuthToken(result);
+  
+          return {
+            message:"Successfully update the user",
+            success: true
+          };
+        } catch (err) {
+          throw new ApolloError(err.message);
+        }
+      },
+
+
+         /**
+     * @DESC to delete the  user
+     * @Params userId
+     * @Access Private
+     */
+      deleteUser:async(_,{userId},{User})=>{
+      try {
+        let user =await  User.findByIdAndDelete(userId);
+        if(user){
+          return {
+            message: "Delete succesfully!",
+            success: true
+          }
+        }else{
+          return {
+            message: "There is no this user to delete ",
+            success: false
+          }
+        }
+      } catch (error) {
+        return {
+          message: error.message,
+          success: false
+        }
+      }
+    }
   },
 };

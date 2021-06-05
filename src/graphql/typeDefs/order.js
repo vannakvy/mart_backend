@@ -46,6 +46,7 @@ input OrderItemInput{
     qty: Int!
     image:String 
     salePrice: Int!
+    category:String!
     product: String!
    
 }

@@ -26,6 +26,11 @@ const email = yup
     .required('Email is required.')
     .email('This is invalid email.');
 
+    const role = yup
+    .string()
+    .required('Role is required.')
+    
+
 const password = yup
     .string()
     .required("Password is required.")
@@ -38,11 +43,13 @@ export const UserRegisterationRules = yup.object().shape({
     password,
     firstName,
     lastName,
-    email
+    email,
+    role
 });
 
 // User Authentication Validation Schema
 export const UserAuthenticationRules = yup.object().shape({
     username,
     password
+   
 });

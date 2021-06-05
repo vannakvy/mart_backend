@@ -3,6 +3,11 @@ import {
     Schema
 } from 'mongoose';
 
+const roleSchema = Schema({
+    role:{type: String, enum:['BASIC','ADMIN','SUPPER','ACCOUNTANT','MARTMANAGE'], default:'BASIC'},
+   
+})
+
 const UserSchema = new Schema({
     username: {
         type: String,
@@ -23,7 +28,10 @@ const UserSchema = new Schema({
     password: {
         type: String,
         required: true
-    }
+    },
+    roles:[
+        roleSchema
+    ]
 }, {
     timestamps: true
 });

@@ -1,7 +1,7 @@
 import { NewOrderRules } from "../../validations";
 import { ApolloError } from "apollo-server-express";
 import { getArgumentValues } from "graphql/execution/values";
-import {ORDER_CREATED} from '../../constant'
+import { ORDER_CREATED } from "../../constant";
 const OrderLabels = {
   docs: "orders",
   limit: "perPage",
@@ -24,30 +24,52 @@ export default {
       return orders;
     },
 
-    //@desc get the latest order and limit 
-    //@Access admin 
-    getLatestOrder:async (_, {},{Order})=>{
-      const orders = await Order.find().populate('user').sort({ createdAt: 1 }).limit(5);
-      return orders
+    //@desc get the latest order and limit
+    //@Access admin
+    getLatestOrder: async (_, {}, { Order }) => {
+      const orders = await Order.find()
+        .populate("user")
+        .sort({ createdAt: 1 })
+        .limit(5);
+      return orders;
     },
-    // @Des get the total number of item based on category sold 
+    // @Des get the total number of item based on category sold
     //@Access admin
 
-    classifyNumberOfProductSold:async(_,{},{Order, Product})=>{
-      var prodId = await Order.distinct("orderItems.product")
-    var a =await   Order.aggregate([{"$match":{"_id":{"$in":prodId}}},{"$group":{"_id":"$name","sum":{"$sum":1}}}])
-      console.log(a)
-      return 
+    classifyNumberOfProductSold: async (_, {}, { Order, Product }) => {
+      //   var prodId = await Order.distinct("orderItems.product")
+      // var a = await   Product.aggregate([{"$match":{"_id":{"$in":prodId}}},{$group:{"_id":"$category",count:{$sum:1}}}])
+      //   console.log(prodId)
+      // console.log(a)
+      const aggregatorOpts = [
+        {
+          $unwind: "$orderItems",
+        },
+        {
+          $group: {
+            _id: "$orderItems.category",
+            count: { $sum: 1 },
+          },
+        },
+      ];
+
+      var a = await Order.aggregate(aggregatorOpts).exec();
+     
+      return {
+        food:a[0].count,
+        drink:a[1].count,
+        grocery:a[2].count
+      };
     },
 
-    //@Des get new order fof updating the notification 
-    //access private 
-   getNewOrder :async(_,{},{Order})=>{
-    const num = await Order.countDocuments({orderConfirmed:false});
-    return {
-      num
-    };
-   },
+    //@Des get new order fof updating the notification
+    //access private
+    getNewOrder: async (_, {}, { Order }) => {
+      const num = await Order.countDocuments({ orderConfirmed: false });
+      return {
+        num,
+      };
+    },
     //@Get one order
     //@access private
     getOrderById: async (_, { id }, { Order }) => {
@@ -106,19 +128,22 @@ export default {
       return orders;
     },
   },
-  
-  Subscription:{
-    newOrder:{
-      subscribe:(_,__,{pubsub})=> pubsub.asyncIterator(ORDER_CREATED)
-    }
+
+  Subscription: {
+    newOrder: {
+      subscribe: (_, __, { pubsub }) => pubsub.asyncIterator(ORDER_CREATED),
+    },
   },
   Mutation: {
     // @Desc update the order confirmed
     //@access  private (admin)
 
-    updateOrderConfirmed: async (_, { id,data }, { Order }) => {
+    updateOrderConfirmed: async (_, { id, data }, { Order }) => {
       try {
-        await Order.findByIdAndUpdate({_id:id},{"orderConfirmed":!data,"orderConfirmedAt": new Date()});
+        await Order.findByIdAndUpdate(
+          { _id: id },
+          { orderConfirmed: !data, orderConfirmedAt: new Date() }
+        );
         return {
           success: true,
           message: "Order Confirmed",
@@ -134,15 +159,17 @@ export default {
     // @Desc update the order confirmed
     //@access  private (admin)
 
-    updateOrderPaid: async (_, { id,data }, { Order }) => {
+    updateOrderPaid: async (_, { id, data }, { Order }) => {
       try {
-        const order = await Order.findByIdAndUpdate({_id:id},{"isPaid":!data,"paidAt":new Date()});
+        const order = await Order.findByIdAndUpdate(
+          { _id: id },
+          { isPaid: !data, paidAt: new Date() }
+        );
         return {
           success: true,
           message: "Order Paid dddddd",
         };
       } catch (error) {
-  
         return {
           success: false,
           message: "Order is not Paid ",
@@ -150,12 +177,15 @@ export default {
       }
     },
 
-        // @Desc update the order confirmed
+    // @Desc update the order confirmed
     //@access  private (admin)
 
-    updateOrderDelivered: async (_, { id,data }, { Order }) => {
+    updateOrderDelivered: async (_, { id, data }, { Order }) => {
       try {
-       await Order.findByIdAndUpdate({_id:id},{"isDelivered":!data,"deliveredAt":new Date()});
+        await Order.findByIdAndUpdate(
+          { _id: id },
+          { isDelivered: !data, deliveredAt: new Date() }
+        );
         return {
           success: true,
           message: "Order Delivered",
@@ -178,7 +208,11 @@ export default {
     // shippingAddress,
     // taxPrice,
 
-    createOrderItem: async (_, { newOrder, user_id }, { User, Order,pubsub }) => {
+    createOrderItem: async (
+      _,
+      { newOrder, user_id },
+      { User, Order, pubsub }
+    ) => {
       const {
         orderItems,
         paymentMethod,
@@ -207,9 +241,9 @@ export default {
         ...newOrder,
         user: user.id,
       });
-      pubsub.publish(ORDER_CREATED,{
-        newOrder:order
-      })
+      pubsub.publish(ORDER_CREATED, {
+        newOrder: order,
+      });
       let result = order.save();
       return result;
     },
