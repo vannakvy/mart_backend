@@ -26,6 +26,11 @@ const long = yup
   .number()
   .required("long of Supplier is required.")
 
+  const uid = yup
+  .string()
+  .required("String of Supplier is required.")
+
+
 const customerImage = yup
   .string()
   .required("customer Image of the Supplier is required.")
@@ -33,6 +38,7 @@ const customerImage = yup
   .max(50, "customer Image of the Supplier should have atmost 3000 characters.");
 
 export const NewCustomerRules = yup.object().shape({
+  uid,
     name,
     tel,
     long,

@@ -9,6 +9,7 @@ import order from './order'
 import customer from './customer'
 import notification from './notification'
 import purchase from './purchase'
+import offer from './offer'
 export default [
     post,
     user,
@@ -20,5 +21,6 @@ export default [
     order,
     customer,
     notification,
-    purchase
+    purchase ,
+    offer
 ];

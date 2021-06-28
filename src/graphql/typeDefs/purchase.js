@@ -8,7 +8,7 @@ export default gql`
     getPurchaseWithPagination(
       page: Int
       limit: Int
-      key: String
+      keyword: String
     ): PurchasePaginator!
   }
   extend type Mutation {

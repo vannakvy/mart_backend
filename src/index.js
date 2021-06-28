@@ -11,15 +11,50 @@ import resolvers from "./graphql/resolvers";
 import AuthMiddleware from "./middlewares/auth";
 import connectDB from "./config/db";
 import http from "http";
+import path from 'path'
 
 const app = express();
 // // Remove x-powered-by header
 app.disable("x-powered-by");
-
 app.use(bodyParser.json());
 
+
 // Set Express Static Directory
+// app.use(
+//   '/uploads/eLearningUploads',
+//   express.static(path.join(__dirname, '/uploads/eLearningUploads'))
+//  );
+ 
+//  app.use('/uploads/img', express.static(path.join(__dirname, '/uploads/img')));
+ 
+//  app.use(
+//   '/adminEbook/details',
+//   express.static(path.join(__dirname, '/uploads/eBookUploads'))
+//  );
+
+ app.use(
+  '/app/userProfile',
+  express.static(path.join(__dirname, 'uploads'))
+ );
+ 
+ app.use(
+  '/app',
+  express.static(path.join(__dirname, 'uploads'))
+ );
+ app.use(
+  '/app/productDetail',
+  express.static(path.join(__dirname, './uploads'))
+ );
+ app.use(
+  '/app/orderDetail',
+  express.static(path.join(__dirname, './uploads'))
+ );
+ app.use(
+  '/',
+  express.static(path.join(__dirname, './uploads'))
+ );
 app.use(express.static(join(__dirname, "./uploads")));
+
 const pubsub = new PubSub();
 // Define the Apollo-Server
 const server = new ApolloServer({
@@ -46,10 +81,10 @@ const server = new ApolloServer({
 const startApp = async () => {
   connectDB();
   try {
-    app.use(AuthMiddleware);
     server.applyMiddleware({
       app,
       cors: true,
+     
     });   
 
     const httpServer = http.createServer(app);

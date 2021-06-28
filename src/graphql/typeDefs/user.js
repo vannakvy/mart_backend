@@ -2,20 +2,24 @@ import {
     gql
 } from "apollo-server-express";
 
-export default gql `
+export default gql`
     extend type Query {
         authUser: User! @isAuth
         allUsers:[User!]
         getUserById(userId:String!):User!
-       
+        getUserWithPagination(page:Int,limit:Int,keyword:String):UserPaginator!
     }
     extend type Mutation {
-        registerUser(newUser: UserInput!): AuthUser!
+        registerUser(newUser: UserInput!): userResponse!
+        addRole(userId:ID!role:String!): userResponse!      
+        deleteRole(userId:ID!,roleId:ID!): userResponse!
         loginUser(username: String!, password: String!):AuthUser!
-        deleteUser(userId:String):userResponse!
-        updateUser(userId:String,updatedUser:UserInput):userResponse!
-  
+        deleteUser(userId:ID!):userResponse!
+        updateAccount(userId:ID!,password:String!,username:String!):userResponse!
+        updateUserDetail(userId:ID!,tel:String!,firstName:String!,lastName:String!,email:String!):userResponse!
+        updateProfileImage(userId:ID!,image:String!):userResponse!
     }
+
     input UserInput {
         email:String!
         username:String!
@@ -23,6 +27,7 @@ export default gql `
         password: String!
         firstName: String!
         role: String!
+        tel:String!
     }
 
     type User {
@@ -31,9 +36,11 @@ export default gql `
         username:String!
         lastName: String!
         firstName: String!
+        image:String
         roles:[Role!]!
         createdAt: String
         updatedAt: String
+        tel:String!
     }
 
     type AuthUser {
@@ -44,10 +51,18 @@ export default gql `
        id:ID!
        role:String!
       }
-
       type userResponse{
           success: Boolean!
           message: String!
 
       }
+
+      type UserPaginator {
+        users: [User!]!
+        paginator: Paginator!
+    }
 `;
+
+
+
+

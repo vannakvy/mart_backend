@@ -10,7 +10,7 @@ const SupplierLabels = {
   meta: "paginator",
   page: "currentPage",
   pagingCounter: "slNo",
-  totalDocs: "totalPosts",
+  totalDocs: "totalDocs",
   totalPages: "totalPages",
 };
 export default {
@@ -28,7 +28,8 @@ export default {
 
     // @DESC get the suppliers by Pagination Variable
     // @access Private
-    getSupplierWithPagination: async (_, { page, limit }, { Supplier }) => {
+    getSupplierWithPagination: async (_, { page, limit ,keyword=""}, { Supplier }) => {
+      
       const options = {
         page: page || 1,
         limit: limit || 10,
@@ -38,10 +39,12 @@ export default {
         },
       };
 
-      let query = {};
+      let query = {
+        $or: [ {firstName : { $regex: keyword, $options: 'i' }}, { lastName: { $regex: keyword, $options: 'i' }, },{ email: { $regex: keyword, $options: 'i' },  },{ village: { $regex: keyword, $options: 'i' },},{ commune: { $regex: keyword, $options: 'i' },  },{ district: { $regex: keyword, $options: 'i' },},{ province: { $regex: keyword, $options: 'i' },  }]
+    }
 
       let suppliers = await Supplier.paginate(query, options);
-
+      console.log(suppliers)
       return suppliers;
     },
   },

@@ -42,6 +42,7 @@ export default gql `
         currentPage: Int
         hasPrevPage: Boolean
         hasNextPage: Boolean
+        totalDocs:Int
     }
 
     type Post {

@@ -8,43 +8,49 @@ export default gql`
     getCustomerWithPagination(
       page: Int
       limit: Int
+      keyword:String
     ): CustomerPaginator!
   }
   extend type Mutation {
+    createTests:String
+    storeCustomerToken(uid:String!,token:String):Customer!
     createCustomer(newCustomer: CustomerInput!): Customer! 
     deleteCustomer(id: ID!): CustomerMessageResponse! 
-    updateCustomer(updatedCustomer: CustomerInput, id: ID!): CustomerMessageResponse!
+    updateCustomer(updatedCustomer: CustomerInput, id: ID!): Customer!
   }
 
   type Customer {
     id: ID!
-    name: String!
-    tel: String!
-    long:Int!
-    lat:Int!
-    address:String!
+    name: String
+    tel: String
+    long:Float
+    lat:Float   
+    uid:String
+    token:String 
+    address:String
     customerImage:String
     email:String
-    createdAt: String!
-    updatedAt: String!
- 
-
+    createdAt: Date
+    updatedAt: Date
   }
 
   input CustomerInput {
-    name: String!
-    tel: String!
-    long:Int!
-    lat:Int!
-    address:String!
+    name: String
+    tel: String
+    long:Float
+    lat:Float
+    uid:String
+    token:String
+    address:String
     customerImage:String
+    email:String
   }
   type CustomerMessageResponse {
     message: String!
     success: Boolean
   }
   type CustomerPaginator {
-    Customers: [Customer!]!
+    customers: [Customer!]!
     paginator: Paginator!
   }
 `;

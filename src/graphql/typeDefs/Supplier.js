@@ -5,8 +5,9 @@ export default gql`
     allSuppliers: [Supplier!]!
     getSupplierById(id: ID!): Supplier!
     getSupplierWithPagination(
-      page: Int
-      limit: Int
+      page: Int!
+      limit: Int!
+      keyword:String
     ): SupplierPaginator!
   }
   extend type Mutation {
@@ -20,7 +21,7 @@ export default gql`
     firstName: String!
     lastName: String!
     tel: String!
-    houseNumber:Int
+    houseNumber:Int!
      village: String! 
      commune: String!
      district: String! 

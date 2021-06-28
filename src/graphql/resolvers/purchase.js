@@ -44,11 +44,7 @@ export default {
 
     // @DESC get the Purchases by Pagination Variable
     // @access Private
-    getPurchaseWithPagination: async (_, { page, limit,key }, { Purchase }) => {
-      
- 
-
-
+    getPurchaseWithPagination: async (_, { page, limit,keyword }, { Purchase }) => {
       const options = {
         page: page || 1,
         limit: limit || 10,
@@ -58,9 +54,9 @@ export default {
         },
         populate: ["product", "supplier"],
       };
-    
+
     // let query={'product.productName':{ $regex: key, $options: 'i' }}
-   let query = { 'product.productName': { $regex:key, $options: 'si' }}
+   let query = { 'product.productName': { $regex:keyword, $options: 'si' }}
       let purchases = await Purchase.paginate(query, options);
       return purchases;
     },

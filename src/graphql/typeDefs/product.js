@@ -1,11 +1,11 @@
 import { gql } from "apollo-server-express";
 export default gql`
     extend type Query{
-        allProducts(type:String):[Product!]!
+        allProducts(type:String,keyword:String):[Product!]!
         totalProduct: Int!
         getProductById(id:ID!):Product!
         getTopProducts:[Product!]!
-        getProductsWithPagination(page:Int,limit:Int): ProductPaginator!
+        getProductsWithPagination(page:Int,limit:Int,keyword:String): ProductPaginator!
         getProductsWithPaginationCategory(page:Int,limit:Int,category:String): ProductPaginator!
 
     }

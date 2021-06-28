@@ -9,7 +9,7 @@ const ProductLabels = {
   meta: "paginator",
   page: "currentPage",
   pagingCounter: "slNo",
-  totalDocs: "totalPosts",
+  totalDocs: "totalDocs",
   totalPages: "totalPages",
 };
 
@@ -18,13 +18,18 @@ export default {
     //@Desc get all the products
     // @Access private
 
-    allProducts: async (_, {type}, { Product }) => {
+    allProducts: async (_, {type,keyword}, { Product }) => {
       let products;
-     if(type!==""){
-      products = await Product.find({'category':type})
-     }else{
-      products = await Product.find();
-     }
+
+      if(keyword===""){
+        if(type!==""){
+          products = await Product.find({'category':type})
+         }else{
+          products = await Product.find();
+         }
+      }else{
+        products = await Product.find({ productName: { $regex: keyword, $options: "i" } })
+      }
       return products;
     },
 // @Desc get ttotal number of product 
@@ -45,7 +50,7 @@ export default {
     },
     //Desc get the product with the pagination
     //Access public
-    getProductsWithPagination: async (_, { page, limit }, { Product }) => {
+    getProductsWithPagination: async (_, { page, limit,keyword="" }, { Product }) => {
       const options = {
         page: page || 1,
         limit: limit || 10,
@@ -54,7 +59,11 @@ export default {
           createdAt: -1,
         },
       };
-      let products = await Product.paginate({}, options);
+
+      let query = {
+        $or: [ {productName : { $regex: keyword, $options: 'i' }}, { category: { $regex: keyword, $options: 'i' } }]
+    }
+      let products = await Product.paginate(query, options);
       return products;
     },
 
@@ -129,7 +138,10 @@ export default {
       try {
         const product = await Product.findOneAndDelete({ _id: id });
         if (!product) {
-          throw new Error("Unautherized Access");
+          return {
+            success: false,
+            message: "Product Deleted Not success",
+          };
         }
         return {
           success: true,
@@ -144,7 +156,7 @@ export default {
 
 updateproductImage:async (_, {id,file},{Product})=>{
   try {
-    await Product.update({ _id: id }, { $set: { productImage: file } });
+    await Product.updateOne({ _id: id }, { $set: { productImage: file } });
     return {
       message: "Updated the product Image succesfully",
       success: true,
@@ -176,7 +188,7 @@ updateproductImage:async (_, {id,file},{Product})=>{
           }
         );
 
-        let product = await Product.findOneAndUpdate(
+        let product = await Product.updateOne(
           { _id: id },
           updatedProduct
         );
@@ -267,7 +279,7 @@ updateproductImage:async (_, {id,file},{Product})=>{
     //access private
     updateProductPrice: async (_, { price, id }, { Product }) => {
       try {
-        await Product.update({ _id: id }, { $set: { price: price } });
+        await Product.updateOne({ _id: id }, { $set: { price: price } });
 
         return {
           message: "Updated the product price succesfully",
@@ -283,7 +295,7 @@ updateproductImage:async (_, {id,file},{Product})=>{
 
     updateProductCountInstock: async (_, { id, countInStock }, { Product }) => {
       try {
-        await Product.update(
+        await Product.updateOne(
           { _id: id },
           { $set: { countInStock: countInStock } }
         );

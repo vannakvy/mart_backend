@@ -28,13 +28,11 @@ const user_id = yup
     .required('taxPrice of the Order is required.')
     .min(1, 'taxPrice of the Order should have atleast 5 characters.')
     .max(300, 'taxPrice of the Order should have atmost 3000 characters.');
-
     const totalPrice = yup
     .number()
     .required('totalPrice of the Order is required.')
     .min(1, 'totalPrice of the Order should have atleast 5 characters.')
     .max(300, 'totalPrice of the Order should have atmost 3000 characters.');
-
     const shippingAddress = yup
     .object({
         address: yup.string().required('address of the user is required.')

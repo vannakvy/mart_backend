@@ -1,18 +1,19 @@
-import { Model } from "mongoose";
-import Product from './Product';
-import {Schema,model} from "mongoose";
+
+
+import mongoose from "mongoose";
 import Paginate from 'mongoose-paginate-v2';
-const orderSchema = new Schema(
+
+const orderSchema = new mongoose.Schema(
   {
-    user: { type: Schema.Types.ObjectId,required: true,ref: "users"},
+    customer: { type: mongoose.Schema.Types.ObjectId,required: true,ref: "customer"},
     orderItems: [
       {
         name:String,
         qty:{type:Number,required:true,default:0},
-        image:String,
+        productImage:String,
         category:String,
         salePrice:{type: Number,required:true,default:0},
-        product: {type: Schema.Types.ObjectId,required: String,ref: "Product"},
+        product: {type: mongoose.Schema.Types.ObjectId,required: String,ref: "product"},
       },
     ],
     paymentMethod: {type: String,required: true},
@@ -38,15 +39,15 @@ const orderSchema = new Schema(
   }
 );
 
-const removeQtyFromProduct=(data)=>{
-data.forEach( async(data)=>{
- await  Product.findByIdAndUpdate({_id: data.product.toString()}, {$inc: { countInStock: -data.qty} }, {new: false, upsert: true});
-})
-}
-orderSchema.pre('save', async function(next) {
- await removeQtyFromProduct(this.orderItems)
-next()
-});
+// const removeQtyFromProduct=(data)=>{
+// data.forEach( async(data)=>{
+//  await  Product.findByIdAndUpdate({_id: data.product.toString()}, {$inc: { countInStock: -data.qty} }, {new: false, upsert: true});
+// })
+// }
+// orderSchema.pre('save', async function(next) {
+//  await removeQtyFromProduct(this.orderItems)
+// next()
+// });
 
 // entitySchema.pre('save', function(next) {
 //   var doc = this;
@@ -60,6 +61,6 @@ next()
 
 
 orderSchema.plugin(Paginate)
-const Order = model("order",orderSchema)
+const Order = mongoose.model("order",orderSchema)
 
 export default Order;
