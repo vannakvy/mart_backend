@@ -3,6 +3,7 @@ export default gql`
     extend type Query{
         allOffers:[Offer!]!
         getOfferById(id:ID!):Offer!
+        getLatestOffer:[Offer!]!
         getOffersWithPagination(page:Int,limit:Int,keyword:String): OfferPaginator!
     }
     extend type Mutation{
@@ -12,11 +13,12 @@ export default gql`
     } 
     input OfferInput{
     title :String!
-    start_date :Date!
-    end_date :Date!
+    start_date :Date
+    end_date :Date
     discount: Float
-    product: ID!
+    product: ID
     description :String
+    isAllProduct: Boolean
     }
 
 type OfferMessageResponse {
@@ -26,17 +28,18 @@ type OfferMessageResponse {
 type Offer{
     id:ID!
     title :String!
-    start_date :Date!
-    end_date :Date!
+    start_date :Date
+    end_date :Date
     discount: Float
-    product: ID!
+    product: Product
     description :String
+    isAllProduct:Boolean
     createdAt: Date 
     updatedAt: Date
 }
 
 type OfferPaginator {
-        offers: [Product!]!
+        offers: [Offer!]!
         paginator: Paginator!
     }
 

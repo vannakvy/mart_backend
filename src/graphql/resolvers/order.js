@@ -337,7 +337,7 @@ const body ={
 }
   handlePushTokens(title,body,savedPushTokens);
 
-        pubsub.publish(UPDATE_ORDER_CONFIRM, 
+       pubsub.publish(UPDATE_ORDER_CONFIRM, 
           { updateOrderonTheway: order },
         );
         return {
@@ -385,8 +385,6 @@ const body ={
           await user.save();
           customer_id = user.id;
           await user.save();
-
-
         }
         if (!user) {
           customer = new Customer({
