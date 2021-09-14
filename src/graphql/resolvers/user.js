@@ -52,7 +52,6 @@ export default {
     //@Desc get all users with pagination 
 
     getUserWithPagination: async (_,{ page, limit,keyword="" },{ User }) => {
-      console.log(typeof keyword)
       let key = keyword.toString()
       console.log("key")
       console.log(page,limit)
